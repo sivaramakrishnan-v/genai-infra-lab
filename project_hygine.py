@@ -5,6 +5,7 @@ import sys
 
 def add_gitkeep_to_empty_dirs(root):
     for current_path, dirs, files in os.walk(root):
+        dirs[:] = [d for d in dirs if d != ".git"]
         if current_path == root:
             continue
         real_files = [f for f in files if f != ".gitkeep"]
@@ -20,6 +21,7 @@ def add_gitkeep_to_empty_dirs(root):
 
 def ensure_init_files(root):
     for current_path, dirs, files in os.walk(root):
+        dirs[:] = [d for d in dirs if d != ".git"]
         if "__init__.py" not in files and any(d for d in dirs):
             init_file = os.path.join(current_path, "__init__.py")
             with open(init_file, "w") as f:
