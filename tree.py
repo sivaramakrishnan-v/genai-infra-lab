@@ -1,5 +1,6 @@
 import os
 
+
 def print_tree(start_path, prefix=""):
     items = sorted(os.listdir(start_path))
     pointers = {
@@ -19,6 +20,7 @@ def print_tree(start_path, prefix=""):
         if os.path.isdir(path):
             extension = pointers["space"] if is_last else pointers["pipe"]
             print_tree(path, prefix + extension)
+
 
 # Run it
 if __name__ == "__main__":

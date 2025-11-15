@@ -1,5 +1,6 @@
 import os
 
+
 def add_gitkeep_to_empty_dirs(root: str):
     """
     Traverse all subdirectories starting at 'root'.

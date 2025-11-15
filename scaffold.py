@@ -43,7 +43,7 @@ STRUCTURE = [
     "data/embeddings",
     "docs/architecture",
     "docs/decisions",
-    "docs/runbooks"
+    "docs/runbooks",
 ]
 
 # -----------------------------
@@ -56,8 +56,9 @@ FILES = [
     ".gitignore",
     "src/api/main.py",
     "src/utils/config.py",
-    "src/utils/logging.py"
+    "src/utils/logging.py",
 ]
+
 
 # -----------------------------
 # Generate Folders + Files
