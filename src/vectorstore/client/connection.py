@@ -6,11 +6,12 @@ from dataclasses import dataclass
 import os
 from typing import Any, Iterator, Mapping, Optional, Sequence, Union
 
-from dotenv import load_dotenv, find_dotenv
+from dotenv import load_dotenv
 import psycopg
 from psycopg import Connection, Cursor
 from pgvector.psycopg import register_vector
 
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 
@@ -34,9 +35,9 @@ class PgVectorConnectionConfig:
 
     @classmethod
     def from_env(cls, dotenv_path: Optional[str] = None) -> "PgVectorConnectionConfig":
-        env_file = dotenv_path or find_dotenv(usecwd=True)
-        loaded = load_dotenv(dotenv_path=env_file if env_file else None, override=False)
-        logger.debug("load_dotenv path=%s loaded=%s", env_file or ".env (default search)", loaded)
+        env_file = dotenv_path or ".env"
+        loaded = load_dotenv(env_file, override=False)
+        logger.debug("load_dotenv path=%s loaded=%s", env_file, loaded)
         return cls(
             host=_get_required_env("PG_HOST"),
             port=int(os.environ.get("PG_PORT", "5432")),
@@ -135,7 +136,7 @@ class PgVectorClient:
 
 def main(dotenv_path: Optional[str] = None) -> None:
     """
-    Convenience entry point to verify connectivity and exercise the PgVector helpers.
+    Convenience entry point to verify connectivity and the PgVector helpers.
     """
     logging.basicConfig(level=logging.INFO)
     try:
@@ -144,27 +145,31 @@ def main(dotenv_path: Optional[str] = None) -> None:
         client = PgVectorClient(manager)
 
         with manager.connection() as conn:
-            logger.info(
-                "Connection established via manager: %s:%s/%s",
-                conn.info.host,
-                conn.info.port,
-                conn.info.dbname,
-            )
+            info = getattr(conn, "info", None)
+            if info:
+                logger.info(
+                    "Connection established via manager: host=%s port=%s db=%s",
+                    info.host,
+                    info.port,
+                    info.dbname,
+                )
+            else:
+                logger.info("Connection established via manager.")
 
         with manager.cursor() as cur:
-            cur.execute("SELECT 'cursor test' as message;")
+            cur.execute("SELECT 'cursor test' AS message;")
             logger.info("Cursor test result: %s", cur.fetchone())
 
         client.execute("SELECT 1;")
-        logger.info("Client execute test completed.")
+        logger.info("Client execute() completed for SELECT 1.")
 
         single = client.fetch_one("SELECT 42 AS value;")
-        logger.info("Client fetch_one result: %s", single)
+        logger.info("Client fetch_one() result: %s", single)
 
         rows = client.fetch_all("SELECT generate_series(1, 3) AS value;")
-        logger.info("Client fetch_all results: %s", rows)
+        logger.info("Client fetch_all() results: %s", rows)
 
-        logger.info("All connection helpers executed successfully.")
+        logger.info("All PgVector connection helpers executed successfully.")
     except Exception:
         logger.exception("Connection test failed")
         raise
