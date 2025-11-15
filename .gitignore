@@ -1,0 +1,8 @@
+.env
+data/raw/otel/otel_style_logs_10mb.log
+data/raw/synthetic/synthetic_java_app1_50mb.log
+data/raw/synthetic/synthetic_java_app2_50mb.log
+data/raw/synthetic/synthetic_mixed_app_50mb.log
+data/raw/synthetic/synthetic_python_service_50mb.log
+data/raw/synthetic/synthetic_web_frontend_50mb.log
+data/raw/otel/otel_style_traces.json
