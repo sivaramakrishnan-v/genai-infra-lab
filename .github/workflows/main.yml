@@ -1,4 +1,4 @@
-name: Build Docker Image
+name: Build & Deploy Locally
 
 on:
   push:
@@ -15,3 +15,17 @@ jobs:
       - name: Build Docker image
         shell: cmd
         run: docker build -t flask-app-ci-test:latest .
+
+      - name: Stop old container
+        shell: cmd
+        continue-on-error: true
+        run: docker stop flask-app
+
+      - name: Remove old container
+        shell: cmd
+        continue-on-error: true
+        run: docker rm flask-app
+
+      - name: Run updated container
+        shell: cmd
+        run: docker run -d --name flask-app -p 5000:5000 flask-app-ci-test:latest
