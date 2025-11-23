@@ -16,12 +16,12 @@ jobs:
         shell: cmd
         run: docker build -t flask-app-ci-test:latest .
 
-      - name: Stop old container
+      - name: Stop old container (if exists)
         shell: cmd
         continue-on-error: true
         run: docker stop flask-app
 
-      - name: Remove old container
+      - name: Remove old container (if exists)
         shell: cmd
         continue-on-error: true
         run: docker rm flask-app
