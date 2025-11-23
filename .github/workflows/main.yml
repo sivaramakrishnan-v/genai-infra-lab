@@ -13,4 +13,5 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build Docker image
+        shell: cmd
         run: docker build -t flask-app-ci-test:latest .
