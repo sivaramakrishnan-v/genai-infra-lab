@@ -1,4 +1,4 @@
-name: Build & Deploy Locally
+name: Build & Deploy Backend Only
 
 on:
   push:
@@ -14,7 +14,7 @@ jobs:
 
       - name: Build Backend Docker image
         shell: cmd
-        run: docker build -t flask-app-ci-test:latest ./backend
+        run: docker build -t flask-app-ci-test:latest .
 
       - name: Stop old container (if exists)
         shell: cmd
