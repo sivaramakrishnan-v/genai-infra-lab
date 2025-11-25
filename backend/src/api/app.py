@@ -18,7 +18,11 @@ def create_app():
     def test():
         data = request.get_json()
         return jsonify({"echo": data}), 200
-
+    
+    @app.route("/api/analyze", methods=["POST"])
+    def analyze():
+        return jsonify({"echo":"Analyze"}), 200
+    
     return app
 
 

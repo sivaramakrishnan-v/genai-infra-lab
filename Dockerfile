@@ -2,13 +2,17 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
+# Install Python dependencies from ROOT requirements.txt
 COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . /app
+# Copy backend folder ONLY
+COPY backend /app/backend
 
-ENV PYTHONPATH="/app"
+# Set PYTHONPATH so imports work
+ENV PYTHONPATH="/app/backend"
 
 EXPOSE 5000
 
-CMD ["python", "src/api/app.py"]
+# Start Flask backend from inside /backend
+CMD ["python", "backend/src/api/app.py"]
