@@ -1,11 +1,12 @@
 import Header from "./components/Header";
-import Analyze from "./pages/Analyze";
+import Chat from "./pages/Chat";
+import "./App.css";
 
 function App() {
   return (
     <div>
       <Header />
-      <Analyze />
+      <Chat />
     </div>
   );
 }

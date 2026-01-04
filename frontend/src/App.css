@@ -1,42 +1,106 @@
 #root {
-  max-width: 1280px;
+  max-width: 960px;
   margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  padding: 24px;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #0f172a;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+body {
+  background: #f8fafc;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.chat-shell {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.chat-window {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+  min-height: 420px;
+  max-height: 70vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
 }
 
-.card {
-  padding: 2em;
+.chat-bubble {
+  padding: 12px 14px;
+  border-radius: 12px;
+  line-height: 1.5;
+  width: fit-content;
+  max-width: 80%;
+  border: 1px solid transparent;
 }
 
-.read-the-docs {
-  color: #888;
+.chat-bubble .chat-role {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+  opacity: 0.6;
+}
+
+.chat-bubble.user {
+  margin-left: auto;
+  background: #2563eb;
+  color: #f8fafc;
+  border-color: #1d4ed8;
+}
+
+.chat-bubble.assistant {
+  background: #f1f5f9;
+  color: #0f172a;
+  border-color: #e2e8f0;
+}
+
+.chat-bubble.meta {
+  background: #ecfeff;
+  border-color: #67e8f9;
+  color: #0b1b2b;
+}
+
+.chat-input-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.chat-input-row textarea {
+  flex: 1;
+  resize: vertical;
+  min-height: 80px;
+  border-radius: 12px;
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.chat-input-row button {
+  padding: 12px 18px;
+  border-radius: 12px;
+  border: none;
+  background: #2563eb;
+  color: #f8fafc;
+  font-weight: 600;
+  cursor: pointer;
+  min-width: 90px;
+}
+
+.chat-input-row button:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+.error-text {
+  color: #b91c1c;
+  font-size: 14px;
 }

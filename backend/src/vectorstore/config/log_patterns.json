@@ -1,0 +1,68 @@
+{
+  "spring_boot": {
+    "description": "Spring Boot / Tomcat-style application logs with thread, level, logger, message.",
+    "line_pattern": "^(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{3}) \\[([^\\]]+)\\] (\\w+) ([^ ]+) - (.+)$",
+    "groups": {
+      "timestamp": 1,
+      "thread": 2,
+      "level": 3,
+      "logger": 4,
+      "message": 5
+    },
+    "multiline": {
+      "start_pattern": "(ERROR|Exception)",
+      "continue_pattern": "^\\s+at\\s+[\\w\\.]+\\(.+\\)"
+    }
+  },
+
+  "tomcat_access": {
+    "description": "Tomcat access logs using Common Log Format / Combined Log Format",
+    "line_pattern": "^(\\S+) (\\S+) (\\S+) \\[([^\\]]+)\\] \"([^\"]+)\" (\\d{3}) (\\d+|-)$",
+    "groups": {
+      "ip": 1,
+      "ident": 2,
+      "user": 3,
+      "timestamp": 4,
+      "request": 5,
+      "status": 6,
+      "bytes": 7
+    }
+  },
+
+  "json_log": {
+    "description": "Logs where each line is a JSON object",
+    "json": true
+  },
+
+  "python_logging": {
+    "description": "Python standard logging format: timestamp level message",
+    "line_pattern": "^(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}) (INFO|ERROR|WARNING|DEBUG|CRITICAL) (.+)$",
+    "groups": {
+      "timestamp": 1,
+      "level": 2,
+      "message": 3
+    },
+    "multiline": {
+      "start_pattern": "(Traceback|ERROR)",
+      "continue_pattern": "^\\s+File\\s+\".+\",\\s+line\\s+\\d+"
+    }
+  },
+
+  "nodejs": {
+    "description": "Node.js logging using pino/winston-like format",
+    "line_pattern": "^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d+Z) (INFO|ERROR|WARN|DEBUG) (.+)$",
+    "groups": {
+      "timestamp": 1,
+      "level": 2,
+      "message": 3
+    }
+  },
+
+  "generic_line": {
+    "description": "Fallback log format for unknown patterns",
+    "line_pattern": "^(.*)$",
+    "groups": {
+      "message": 1
+    }
+  }
+}

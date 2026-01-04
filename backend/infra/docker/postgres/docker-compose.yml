@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  pgvector-db:
+    image: pgvector/pgvector:pg16
+    container_name: pgvector-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: genai
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./init:/docker-entrypoint-initdb.d
+
+  pgadmin:
+    image: dpage/pgadmin4          # <-- FIXED INDENTATION
+    container_name: pgadmin-ui
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_LISTEN_ADDRESS: "0.0.0.0"
+    ports:
+      - "9999:80"
+    depends_on:
+      - pgvector-db
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+volumes:
+  pg_data:
+  pgadmin_data:
