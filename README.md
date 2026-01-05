@@ -1,65 +1,97 @@
-# genai-infra-lab
+# GenAI Infra Lab
 
-# GenAI Vectorstore Client
+A minimal RAG lab combining a Flask API, PostgreSQL/pgvector, and a React/Vite chat UI for log analysis experiments.
 
-A lightweight, Python client for working with **PostgreSQL + pgvector** in GenAI and RAG applications.
+## Stack
+- Flask API with SentenceTransformers embeddings and LangChain ChatOpenAI responses
+- PostgreSQL + pgvector for similarity search
+- React 19 + Vite UI (built assets served by Flask in production)
+- Dockerfile for a Python 3.11 backend image
 
-This project provides:
-- A reusable **Connection Manager**
-- A high-level **VectorStoreClient** for embeddings
-- Safe helpers for executing, fetching, and managing queries
-- Local development environment setup
-- End-to-end connection tests
+## Repo Layout
+- backend/src/api: Flask app and RAG endpoints
+- backend/src/vectorstore: pgvector connection + query helpers
+- frontend: React app; `npm run build` outputs to `frontend/dist` served by Flask
+- Dockerfile: backend-only container (uses root requirements.txt)
 
----
+## Prerequisites
+- Python 3.11+
+- Node 20+
+- PostgreSQL with pgvector extension enabled
+- OpenAI API key; AWS credentials optional for Bedrock helpers
+- Docker (optional)
 
-## 🚀 Features
+## Environment
+Create `.env` at the repo root (backend auto-loads it):
+```
+PG_HOST=localhost
+PG_PORT=5432
+PG_DATABASE=genai
+PG_USER=genai
+PG_PASSWORD=changeme
+OPENAI_API_KEY=***YOUR_API_KEY***
+OPENAI_MODEL=gpt-4o-mini
+LOG_LEVEL=INFO
+AWS_REGION=us-east-1        # optional, Bedrock helpers
+BEDROCK_PROMPT=what is sre? # optional, Bedrock helpers
+```
 
-### ✓ Clean Postgres Connection Manager  
-Simplifies handling database connections, DSNs, and environment variables.
+## Backend Setup
+```
+python -m venv .venv
+# Windows
+.venv\Scripts\activate
+# macOS/Linux
+source .venv/bin/activate
 
-### ✓ Automatic pgvector Registration  
-Ensures vector types are available on every connection.
-
-### ✓ High-Level Database Client  
-Utilities for:
-- `execute(sql, params)`
-- `fetch_one(sql, params)`
-- `fetch_all(sql, params)`
-- `insert_embedding(vector)`
-- `similarity_search(query_vector, top_k)`
-
-### ✓ Full Logging Support  
-Structured logs for debugging and visibility.
-
-### ✓ Easy Integration with GenAI Pipelines  
-Designed for:
-- RAG systems  
-- LLM knowledge stores  
-- LangGraph/LangChain agents  
-- Embedding pipelines  
-
----
-
-## 📦 Project Structure
-
-
----
-
-## 🛠 Installation
-
-### 1. Clone the repository
-
-git clone https://github.com/sivaramakrishnan-v/genai-infra-lab.git
-cd genai-vectorstore
-
-## 2. Create your virtual environment
-
-python -m venv genailab-env
-source genailab-env/bin/activate     # macOS/Linux
-genailab-env\Scripts\activate        # Windows
-
-3. Requirements
 pip install -r requirements.txt
+```
 
+## Frontend Build (served by Flask)
+```
+cd frontend
+npm install
+npm run build  # outputs to frontend/dist
+cd ..
+```
 
+## Run Backend (serves API + built UI)
+```
+# ensure the frontend is built first
+# Windows PowerShell
+$env:PYTHONPATH="backend"
+python backend/src/api/app.py
+
+# macOS/Linux
+export PYTHONPATH=backend
+python backend/src/api/app.py
+```
+App listens on http://localhost:5000.
+
+## Frontend Dev Server (optional)
+```
+cd frontend
+npm run dev -- --host
+```
+For API calls during dev, add a proxy to `vite.config.js`:
+```
+server: { proxy: { "/api": "http://localhost:5000" } }
+```
+(or call the backend with a full URL).
+
+## Docker
+```
+docker build -t genai-infra-lab .
+docker run -p 5000:5000 --env-file .env genai-infra-lab
+```
+Note: the Dockerfile currently ships the backend only. To serve the UI, build `frontend/dist` and copy it into the image (or mount it).
+
+## Smoke Test
+```
+# with venv active
+$env:PYTHONPATH="backend"  # or export PYTHONPATH=backend
+python backend/src/api/main.py
+```
+
+## Database
+Ensure pgvector is installed and a `log_event` table with an `embedding` vector column exists; RAG queries read from it.
