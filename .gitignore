@@ -9,7 +9,7 @@
 data/raw/
 data/processed/
 data/embeddings/
-
+src/vectorstore/embedding_data/
 # --- Python ---
 __pycache__/
 *.py[cod]
