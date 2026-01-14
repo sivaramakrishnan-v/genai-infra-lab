@@ -3,7 +3,6 @@ from __future__ import annotations
 import argparse
 import json
 import logging
-import os
 import time
 from dataclasses import dataclass
 from typing import Any, Sequence
@@ -12,8 +11,10 @@ import requests
 from langchain.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_openai import ChatOpenAI
-from dotenv import load_dotenv
-
+try:
+    from ...utils.config import load_openai_settings
+except ImportError:
+    from utils.config import load_openai_settings  # type: ignore
 try:
     # when imported as package
     from ...vectorstore.client.connection import (
@@ -33,11 +34,6 @@ set_debug(True)
 logger = logging.getLogger(__name__)
 
 EMBED_DIM = 384
-
-OPENAI_MODEL_ENV_VAR = "OPENAI_MODEL"
-OPENAI_DEFAULT_MODEL = "gpt-4o-mini"
-OPENAI_ENV_VAR = "OPENAI_API_KEY"
-
 
 @dataclass(frozen=True)
 class RetrievedChunk:
@@ -89,18 +85,8 @@ def _query_similar_logs(
     return rows
 
 
-def _load_openai_settings(dotenv_path: str | None = None) -> tuple[str, str]:
-    env_file = dotenv_path or ".env"
-    load_dotenv(env_file, override=False)
-    api_key = os.environ.get(OPENAI_ENV_VAR)
-    if not api_key:
-        raise RuntimeError(f"Environment variable '{OPENAI_ENV_VAR}' is required but missing.")
-    model_name = os.environ.get(OPENAI_MODEL_ENV_VAR, OPENAI_DEFAULT_MODEL)
-    return api_key, model_name
-
-
 def _build_llm(*, dotenv_path: str | None = None) -> ChatOpenAI:
-    api_key, model_name = _load_openai_settings(dotenv_path)
+    api_key, model_name = load_openai_settings(dotenv_path)
     return ChatOpenAI(model=model_name, api_key=api_key, temperature=0)
 
 

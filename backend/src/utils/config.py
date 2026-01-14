@@ -4,7 +4,13 @@ import logging
 import os
 from typing import Any, Dict, Optional
 
+from dotenv import load_dotenv
+
 logger = logging.getLogger(__name__)
+
+OPENAI_MODEL_ENV_VAR = "OPENAI_MODEL"
+OPENAI_DEFAULT_MODEL = "gpt-4o-mini"
+OPENAI_ENV_VAR = "OPENAI_API_KEY"
 
 
 def get_env(key: str, default: Optional[str] = None, *, required: bool = False) -> str:
@@ -30,6 +36,20 @@ def load_database_config() -> Dict[str, Any]:
         "user": get_env("PG_USER", required=True),
         "password": get_env("PG_PASSWORD", required=True),
     }
+
+
+def load_openai_settings(dotenv_path: Optional[str] = None) -> tuple[str, str]:
+    """
+    Load OpenAI API settings and model name from environment variables.
+    """
+    env_file = dotenv_path or ".env"
+    load_dotenv(env_file, override=False)
+    api_key = os.environ.get(OPENAI_ENV_VAR)
+    if not api_key:
+        logger.error("Required environment variable missing: %s", OPENAI_ENV_VAR)
+        raise RuntimeError(f"Environment variable '{OPENAI_ENV_VAR}' is required but missing.")
+    model_name = os.environ.get(OPENAI_MODEL_ENV_VAR, OPENAI_DEFAULT_MODEL)
+    return api_key, model_name
 
 
 def main() -> None:
